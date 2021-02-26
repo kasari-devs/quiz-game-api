@@ -2,8 +2,12 @@ let correctAnswer;
 // test commit from vsc
 document.addEventListener('DOMContentLoaded', function () {
     loadQuestion();
+    eventListners();
 });
 
+eventListners = () => {
+    document.querySelector('#check-answer').addEventListener('click', validateAnswer);
+}
 // load question from an API
 loadQuestion = () => {
     const url ='https://opentdb.com/api.php?amount=1';
@@ -61,4 +65,23 @@ selectAnswer = (e) => {
     }
     e.target.classList.add('active');
 
+}
+
+// checks if the answer is correct and one answer is selected
+validateAnswer = () => {
+    if (document.querySelector('.questions .active')) {
+        // everything is ok, check if the answer is correct
+    } else {
+        const errorDiv = document.createElement('div');
+        errorDiv.classList.add('alert', 'alert-danger', 'col-md-6');
+        errorDiv.textContent = 'Please select an answer';
+        const questionsDiv = document.querySelector('.questions');
+        questionsDiv.appendChild(errorDiv);
+
+        // remove the error
+        setTimeout(() => {
+            document.querySelector('.alert-danger').remove();
+            
+        }, 1000);
+    }
 }
