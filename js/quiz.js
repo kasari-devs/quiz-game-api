@@ -1,5 +1,5 @@
 let correctAnswer;
-
+// test commit from vsc
 document.addEventListener('DOMContentLoaded', function () {
     loadQuestion();
 });
