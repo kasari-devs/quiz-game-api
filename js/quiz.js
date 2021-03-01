@@ -1,4 +1,7 @@
-let correctAnswer;
+let correctAnswer,
+// if value excist in localStorage, set it, else set it at 0
+    correctNumber = (localStorage.getItem('quiz_game_correct') ? localStorage.getItem('quiz_game_correct') : 0),
+    incorrectNumber = (localStorage.getItem('quiz_game_incorrectNumber') ? localStorage.getItem('quiz_game_incorrectNumber') : 0);
 // test commit from vsc
 document.addEventListener('DOMContentLoaded', function () {
     loadQuestion();
@@ -7,6 +10,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
 eventListners = () => {
     document.querySelector('#check-answer').addEventListener('click', validateAnswer);
+
+    document.querySelector('#clear-storage').addEventListener('click', clearResults);
 }
 // load question from an API
 loadQuestion = () => {
@@ -35,6 +40,10 @@ displayQuestion = questions => {
         questionHTML.innerHTML = `
             <div class="row justify-content-between heading">
                 <p class="category">Category: ${question.category}</p>
+                <div>
+                    <span class="badge badge-success">${correctNumber}</span>
+                    <span class="badge badge-danger">${incorrectNumber}</span>
+                </div>
             </div>
             <h2 class="text-center">${question.question}
         `;
@@ -71,6 +80,8 @@ selectAnswer = (e) => {
 validateAnswer = () => {
     if (document.querySelector('.questions .active')) {
         // everything is ok, check if the answer is correct
+        checkAnswer ()
+
     } else {
         const errorDiv = document.createElement('div');
         errorDiv.classList.add('alert', 'alert-danger', 'col-md-6');
@@ -84,4 +95,40 @@ validateAnswer = () => {
             
         }, 1000);
     }
+}
+
+// check if the answer is correct
+checkAnswer = () => {
+    const userAnswer= document.querySelector('.questions .active');
+    if (userAnswer.textContent === correctAnswer) {
+        correctNumber++;
+    } else {
+        incorrectNumber++;
+    }
+
+    // save into local storage
+    saveToLocalStorage ();
+    // clear previous HTML
+    const app = document.querySelector('#app');
+    // remove questionHTML
+    while (app.firstChild) {
+        app.removeChild(app.firstChild);
+    }
+    // restart the application. load new question
+    loadQuestion();
+}
+
+saveToLocalStorage = () => {
+    localStorage.setItem('quiz_game_correct', correctNumber);
+    localStorage.setItem('quiz_game_incorrectNumber', incorrectNumber);
+}
+
+// clears the results
+clearResults = () => {
+    localStorage.setItem('quiz_game_correct', 0);
+    localStorage.setItem('quiz_game_incorrectNumber', 0);
+
+    setTimeout(() => {
+        window.location.reload();
+    }, 100);
 }
